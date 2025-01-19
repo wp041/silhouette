@@ -14,3 +14,7 @@ export function toDisplayFooter(seconds: number) {
   const min = ((seconds % (60 * 60)) / 60) | 0;
   return hour > 0 ? `${hour}時間${min}分` : `${min}分`;
 }
+
+export function toMinutes(seconds: number): number {
+  return Math.floor(seconds / 60);
+}

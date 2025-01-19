@@ -1,4 +1,4 @@
-import { toHHmmss } from "../../utils/times";
+import { toMinutes } from "../../utils/times";
 import type { Timer } from "./Timer";
 
 function unsafeMatch(str: string, pattern: RegExp): { [key: string]: string } {
@@ -8,7 +8,7 @@ function unsafeMatch(str: string, pattern: RegExp): { [key: string]: string } {
 const pattern = {
   neverRecorded: /[-*] \[.] (?<name>.+)/g,
   recording: /[-*] \[.] (?<name>.+)\(⏳\)$/g,
-  recorded: /[-*] \[.] (?<name>.+)\(⏲️(?<time>\d\d:\d\d:\d\d)\)$/g,
+  recorded: /[-*] \[.] (?<name>.+)\(time::(?<time>\d+)\)$/g,
 } as const;
 
 export function isLineRecording(line: string): boolean {
@@ -61,17 +61,16 @@ class RecordingStatus {
     return { name };
   }
   getNextStatusLine(line: string, timer: Timer): string {
-    return line.replace("(⏳)", `(⏲️${toHHmmss(timer.accumulatedSeconds)})`);
+    return line.replace("(⏳)", `(time::${toMinutes(timer.accumulatedSeconds)})`);
   }
 }
 class RecordedStatus {
   readonly name = "recorded";
   parse(line: string): { name: string; seconds: number } {
     const { name, time } = unsafeMatch(line, pattern.recorded);
-    const [hours, minutes, seconds] = time.split(":").map(Number);
-    return { name, seconds: hours * 60 * 60 + minutes * 60 + seconds };
+    return { name, seconds: Number(time) * 60 };
   }
   getNextStatusLine(line: string): string {
-    return line.replace(/\(⏲️\d\d:\d\d:\d\d\)/, "(⏳)");
+    return line.replace(/\(time::\d+\)/, "(⏳)");
   }
 }
