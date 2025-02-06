@@ -110,13 +110,23 @@ export default class SilhouettePlugin extends Plugin {
     this.timerStatusBar = this.addStatusBarItem();
     const timerStatusItem = this.timerStatusBar.createEl("span", {
       text: "未測定",
-      cls: "silhouette__footer silhouette__footer__timer",
+      cls: [
+        "silhouette__footer",              // 全体のフッターとしてのスタイル
+        "silhouette__footer__timer",       // タイマー位置のスタイル
+        "silhouette__footer__timer-idle"   // 未測定状態を表すスタイル
+      ].join(" ")
     });
     this.timerService.setOnTimerHandler((timer) => {
       const timerText = timer
         ? toDisplayFooter(timer.getPastSeconds(DateTime.now()))
         : "未測定";
       timerStatusItem.setText(timerText);
+      // タイマーの状態に応じてクラスを切り替え
+      timerStatusItem.className = [
+        "silhouette__footer",
+        "silhouette__footer__timer",
+        timer ? "silhouette__footer__timer-active" : "silhouette__footer__timer-idle"
+      ].join(" ");
     }, 30 * 1000);
   }
 
