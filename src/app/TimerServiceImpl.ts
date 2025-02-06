@@ -15,7 +15,7 @@ export class TimerServiceImpl implements TimerService {
   constructor(
     private appHelper: AppHelper,
     private repository: TimerRepository,
-  ) {}
+  ) { }
 
   static create(
     appHelper: AppHelper,
@@ -75,7 +75,7 @@ export class TimerServiceImpl implements TimerService {
         if (await this.hasNotTimer()) {
           new Notice(
             "計測中のタスクがないため、カーソル配下のタスクを計測済にできません。",
-            0,
+            5000, // 5秒後に自動的に消える
           );
           return;
         }
@@ -92,7 +92,7 @@ export class TimerServiceImpl implements TimerService {
         if (await this.hasTimer()) {
           new Notice(
             "計測中のタスクがあるため、新たなタスクを計測開始できません。計測中のタスクを思い出せない場合は 'Force stop recording' コマンドを実行し、強制的に計測中のタスクを計測完了させてください。",
-            0,
+            5000,
           );
           return;
         }
@@ -116,7 +116,7 @@ export class TimerServiceImpl implements TimerService {
         if (await this.hasTimer()) {
           new Notice(
             "計測中のタスクがあるため、新たなタスクを計測開始できません。計測中のタスクを思い出せない場合は 'Force stop recording' コマンドを実行し、強制的に計測中のタスクを計測完了させてください。",
-            0,
+            5000,
           );
           return;
         }
