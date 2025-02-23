@@ -121,11 +121,19 @@ export default class SilhouettePlugin extends Plugin {
         ? toDisplayFooter(timer.getPastSeconds(DateTime.now()))
         : "未測定";
       timerStatusItem.setText(timerText);
+
       // タイマーの状態に応じてクラスを切り替え
+      const pastSeconds = timer ? timer.getPastSeconds(DateTime.now()) : 0;
+      const timerState = timer
+        ? pastSeconds > 30 * 60  // 30分 = 30 * 60秒
+          ? "silhouette__footer__timer-overtime"
+          : "silhouette__footer__timer-active"
+        : "silhouette__footer__timer-idle";
+
       timerStatusItem.className = [
         "silhouette__footer",
         "silhouette__footer__timer",
-        timer ? "silhouette__footer__timer-active" : "silhouette__footer__timer-idle"
+        timerState
       ].join(" ");
     }, 30 * 1000);
   }
